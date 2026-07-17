@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Elijah Tries Three Times to Leave His Apprentice Behind — Elisha Refuses Every Time">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(196, 50%, 40%)"/>
+      <stop offset="100%" stop-color="hsl(216, 40%, 22%)"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#000" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="180" fill="hsl(203, 70%, 52%)" opacity="0.15"/>
+  <path d="M0 200 Q200 500 0 600Z" fill="hsl(203, 70%, 52%)" opacity=".7"/><path d="M1200 180 Q1000 500 1200 600Z" fill="hsl(203, 70%, 52%)" opacity=".7"/><path d="M350 600 V320 Q600 260 850 320 V600Z" fill="hsl(195, 40%, 90%)" opacity=".2"/>
+  <rect width="1200" height="675" fill="url(#shade)"/>
+  <text x="56" y="52" fill="hsl(203, 70%, 52%)" font-family="Arial,sans-serif" font-size="16" font-weight="800" letter-spacing="3">VERSE NEWS · REPORT</text>
+  <text x="56" y="82" fill="rgba(255,255,255,.75)" font-family="Arial,sans-serif" font-size="15" letter-spacing="1">2 Kings 2:1-10</text>
+  <text x="56" y="560" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">Elijah Tries Three Times to Leave</text><text x="56" y="600" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">His Apprentice Behind — Elisha</text>
+</svg>

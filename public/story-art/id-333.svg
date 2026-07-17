@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="God Passes By in Wind, Earthquake, and Fire — Then Speaks in a Gentle Whisper">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(204, 40%, 50%)"/>
+      <stop offset="100%" stop-color="hsl(224, 30%, 32%)"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#000" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="180" fill="hsl(208, 70%, 52%)" opacity="0.15"/>
+  <path d="M100 400 Q600 80 1100 400" fill="none" stroke="hsl(208, 70%, 52%)" stroke-width="18" opacity=".5"/><path d="M140 400 Q600 120 1060 400" fill="none" stroke="hsl(200, 40%, 90%)" stroke-width="12" opacity=".35"/><rect x="500" y="380" width="200" height="90" fill="hsl(200, 40%, 90%)" opacity=".4"/>
+  <rect width="1200" height="675" fill="url(#shade)"/>
+  <text x="56" y="52" fill="hsl(208, 70%, 52%)" font-family="Arial,sans-serif" font-size="16" font-weight="800" letter-spacing="3">VERSE NEWS · REPORT</text>
+  <text x="56" y="82" fill="rgba(255,255,255,.75)" font-family="Arial,sans-serif" font-size="15" letter-spacing="1">1 Kings 19:9-18</text>
+  <text x="56" y="560" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">God Passes By in Wind, Earthquake,</text><text x="56" y="600" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">and Fire — Then Speaks in a Gentle</text>
+</svg>

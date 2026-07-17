@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Favorite Son Sold Into Slavery by His Own Brothers">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(245, 40%, 30%)"/>
+      <stop offset="100%" stop-color="hsl(265, 30%, 12%)"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#000" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="180" fill="hsl(238, 70%, 52%)" opacity="0.15"/>
+  <circle cx="80" cy="80" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="140" cy="235" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="200" cy="190" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="260" cy="145" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="320" cy="100" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="380" cy="255" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="440" cy="210" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="500" cy="165" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="560" cy="120" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="620" cy="275" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="680" cy="230" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="740" cy="185" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="800" cy="140" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="860" cy="95" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="920" cy="250" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="980" cy="205" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="1040" cy="160" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="1100" cy="115" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><path d="M0 480 H1200" stroke="hsl(238, 70%, 52%)" stroke-width="4" opacity=".3"/>
+  <rect width="1200" height="675" fill="url(#shade)"/>
+  <text x="56" y="52" fill="hsl(238, 70%, 52%)" font-family="Arial,sans-serif" font-size="16" font-weight="800" letter-spacing="3">VERSE NEWS · REPORT</text>
+  <text x="56" y="82" fill="rgba(255,255,255,.75)" font-family="Arial,sans-serif" font-size="15" letter-spacing="1">Genesis 37:1–36</text>
+  <text x="56" y="560" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">Favorite Son Sold Into Slavery by</text><text x="56" y="600" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">His Own Brothers</text>
+</svg>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="King Told He Will Die — Prays and Gets 15 More Years — Then Shows His Treasury to Babylon and Loses It">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(233, 40%, 30%)"/>
+      <stop offset="100%" stop-color="hsl(253, 30%, 12%)"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#000" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="180" fill="hsl(238, 70%, 52%)" opacity="0.15"/>
+  <circle cx="80" cy="80" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="140" cy="159" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="200" cy="238" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="260" cy="117" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="320" cy="196" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="380" cy="275" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="440" cy="154" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="500" cy="233" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="560" cy="112" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="620" cy="191" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="680" cy="270" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="740" cy="149" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="800" cy="228" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="860" cy="107" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="920" cy="186" r="4" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="980" cy="265" r="5" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="1040" cy="144" r="2" fill="hsl(230, 40%, 90%)" opacity=".7"/><circle cx="1100" cy="223" r="3" fill="hsl(230, 40%, 90%)" opacity=".7"/><path d="M0 480 H1200" stroke="hsl(238, 70%, 52%)" stroke-width="4" opacity=".3"/>
+  <rect width="1200" height="675" fill="url(#shade)"/>
+  <text x="56" y="52" fill="hsl(238, 70%, 52%)" font-family="Arial,sans-serif" font-size="16" font-weight="800" letter-spacing="3">VERSE NEWS · REPORT</text>
+  <text x="56" y="82" fill="rgba(255,255,255,.75)" font-family="Arial,sans-serif" font-size="15" letter-spacing="1">2 Kings 20:1-21</text>
+  <text x="56" y="560" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">King Told He Will Die — Prays and</text><text x="56" y="600" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">Gets 15 More Years — Then Shows His</text>
+</svg>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Forbidden Fruit Eaten — Paradise Lost Within Hours">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(154, 40%, 45%)"/>
+      <stop offset="100%" stop-color="hsl(174, 30%, 27%)"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#000" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="180" fill="hsl(148, 70%, 52%)" opacity="0.15"/>
+  <ellipse cx="600" cy="520" rx="400" ry="80" fill="hsl(148, 70%, 52%)" opacity=".25"/><path d="M600 480 V220" stroke="hsl(140, 40%, 90%)" stroke-width="14"/><circle cx="600" cy="200" r="110" fill="hsl(148, 70%, 52%)" opacity=".5"/><circle cx="480" cy="250" r="70" fill="hsl(148, 70%, 52%)" opacity=".35"/><circle cx="720" cy="250" r="70" fill="hsl(148, 70%, 52%)" opacity=".35"/>
+  <rect width="1200" height="675" fill="url(#shade)"/>
+  <text x="56" y="52" fill="hsl(148, 70%, 52%)" font-family="Arial,sans-serif" font-size="16" font-weight="800" letter-spacing="3">VERSE NEWS · REPORT</text>
+  <text x="56" y="82" fill="rgba(255,255,255,.75)" font-family="Arial,sans-serif" font-size="15" letter-spacing="1">Genesis 3:1–24</text>
+  <text x="56" y="560" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">Forbidden Fruit Eaten — Paradise</text><text x="56" y="600" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">Lost Within Hours</text>
+</svg>

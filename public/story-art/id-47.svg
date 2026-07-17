@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Tricked at His Own Wedding — Works 14 Years for the Bride He Wanted">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(51, 55%, 42%)"/>
+      <stop offset="100%" stop-color="hsl(71, 45%, 24%)"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#000" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="180" fill="hsl(53, 70%, 52%)" opacity="0.15"/>
+  <path d="M450 300 H750 L780 360 H420Z" fill="hsl(53, 70%, 52%)" opacity=".75"/><path d="M480 300 V220 L540 260 L600 200 L660 260 L720 220 V300" fill="hsl(53, 70%, 52%)"/><rect x="520" y="360" width="160" height="120" fill="hsl(45, 40%, 90%)" opacity=".25"/>
+  <rect width="1200" height="675" fill="url(#shade)"/>
+  <text x="56" y="52" fill="hsl(53, 70%, 52%)" font-family="Arial,sans-serif" font-size="16" font-weight="800" letter-spacing="3">VERSE NEWS · REPORT</text>
+  <text x="56" y="82" fill="rgba(255,255,255,.75)" font-family="Arial,sans-serif" font-size="15" letter-spacing="1">Genesis 29:1–30</text>
+  <text x="56" y="560" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">Tricked at His Own Wedding — Works</text><text x="56" y="600" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">14 Years for the Bride He Wanted</text>
+</svg>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="You Are Holy to the LORD — The Dietary Laws Restated for the New Generation">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(231, 45%, 55%)"/>
+      <stop offset="100%" stop-color="hsl(251, 35%, 37%)"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.05"/>
+      <stop offset="50%" stop-color="#000" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="180" fill="hsl(223, 70%, 52%)" opacity="0.15"/>
+  <circle cx="800" cy="200" r="90" fill="hsl(215, 40%, 90%)" opacity=".55"/><circle cx="800" cy="200" r="140" fill="none" stroke="hsl(215, 40%, 90%)" stroke-width="3" opacity=".3"/><path d="M0 420 Q600 300 1200 420 V675 H0Z" fill="hsl(223, 70%, 52%)" opacity=".35"/>
+  <rect width="1200" height="675" fill="url(#shade)"/>
+  <text x="56" y="52" fill="hsl(223, 70%, 52%)" font-family="Arial,sans-serif" font-size="16" font-weight="800" letter-spacing="3">VERSE NEWS · GUIDANCE</text>
+  <text x="56" y="82" fill="rgba(255,255,255,.75)" font-family="Arial,sans-serif" font-size="15" letter-spacing="1">Deuteronomy 14:1–21</text>
+  <text x="56" y="560" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">You Are Holy to the LORD — The</text><text x="56" y="600" fill="#fff" font-family="Georgia, serif" font-size="34" font-weight="700">Dietary Laws Restated for the New</text>
+</svg>
