@@ -541,14 +541,6 @@ export function resolveStoryImage(story, width = 1200, height = 675) {
   const key = `${story.id || story.headline}::${w}::${h}::v4ill`
   if (cache.has(key)) return cache.get(key)
 
-  const cms = cmsImageUrl(story)
-
-  // Live wire: prefer publisher image
-  if (story.isRealNews && cms) {
-    cache.set(key, cms)
-    return cms
-  }
-
   // Gallery-aligned local plates (scripture / event match)
   const plate = getImagineArtUrl(story)
   if (plate) {
@@ -557,6 +549,7 @@ export function resolveStoryImage(story, width = 1200, height = 675) {
   }
 
   // CMS image when no local plate
+  const cms = cmsImageUrl(story)
   if (cms) {
     cache.set(key, cms)
     return cms

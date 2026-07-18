@@ -5,8 +5,6 @@ import { getQuoteOfTheMoment, formatQuoteWindow } from './data/servantQuotes.js'
 import { resolveStoryImage, generatedStoryArt as generatedStoryArtFromLib } from './lib/storyImages.js';
 import GalleryPage from './components/GalleryPage.jsx';
 import LibraryPage from './components/LibraryPage.jsx';
-import LiveNewsPage from './components/LiveNewsPage.jsx';
-import { fetchRealNews } from './lib/realNews.js';
 
 /** Hash-based routing (no react-router dependency) */
 function parseHash() {
@@ -24,7 +22,6 @@ function parseHash() {
   if (a === 'tools') return { name: 'tools', params: {} };
   if (a === 'gallery') return { name: 'gallery', params: {} };
   if (a === 'library') return { name: 'library', params: {} };
-  if (a === 'live' || a === 'livenews' || a === 'world') return { name: 'live', params: {} };
   if (a === 'division' && b) return { name: 'division', params: { division: b } };
   return { name: 'home', params: {} };
 }
@@ -106,7 +103,6 @@ const BOOK_PALETTE = {
   martyrs:     { from: "#1a0000", to: "#3d0000", accent: "#cc2222" },
   biography:   { from: "#0a0a1a", to: "#18183d", accent: "#7a7acc" },
   creation:    { from: "#00141f", to: "#0a3a4a", accent: "#2a9d8f" },
-  livenews:    { from: "#0b1c24", to: "#1a3a32", accent: "#0d7377" },
   astronomy:   { from: "#050818", to: "#152040", accent: "#6ea8fe" },
   earth:       { from: "#0a1a0a", to: "#1a3d1a", accent: "#52b788" },
   biology:     { from: "#0d1a08", to: "#1e3d12", accent: "#74c69d" },
@@ -135,7 +131,6 @@ const TESTAMENT_TABS = [
 
 const DIVISION_TABS = [
   { key: "all", label: "All" },
-  { key: "livenews", label: "Live News" },
   { key: "creation", label: "Creation" },
   { key: "torah", label: "Torah" },
   { key: "history", label: "History" },
@@ -154,7 +149,6 @@ const TYPE_TABS = [
   { key: "all", label: "All" },
   { key: "NEWS", label: "News" },
   { key: "SCIENCE", label: "Science" },
-  { key: "LIVE", label: "Live wire" },
   { key: "GUIDANCE", label: "Guidance" },
   { key: "WISDOM", label: "Wisdom" },
   { key: "DEVOTIONAL", label: "Devotional" },
@@ -540,7 +534,7 @@ function VerseNews() {
     }
 
     function VerseHeader({ onLogoClick, onNavigate, onOpenBible, onOpenMaps, onOpenPlaces, onOpenWeather, onOpenTools, onOpenGames, onOpenGallery, onOpenLibrary, filters, activeSection }) {
-      const MAIN_DIVS = ["home", "Bible", "Weather", "Live", "Creation", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
+      const MAIN_DIVS = ["home", "Bible", "Weather", "Creation", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
       const OTHER_ITEMS = [
         { label: "Maps", action: () => onOpenMaps() },
         { label: "Places", action: () => onOpenPlaces() },
@@ -549,19 +543,11 @@ function VerseNews() {
         { label: "Tools", action: () => onOpenTools() },
         { label: "Games", action: () => onOpenGames() },
       ];
-      const ALL_MENU_ITEMS = ["home", "Bible", "Maps", "Places", "Gallery", "Library", "Weather", "Live", "Tools", "Games", "Creation", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
+      const ALL_MENU_ITEMS = ["home", "Bible", "Maps", "Places", "Gallery", "Library", "Weather", "Tools", "Games", "Creation", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
       const OTHER_KEYS = new Set(["maps", "places", "gallery", "library", "tools", "games"]);
       const navKey = String(activeSection || filters?.division || "all").toLowerCase();
-      const sectionKey = (d) => {
-        if (d === "home") return "all";
-        if (d === "Live" || d === "live") return "livenews";
-        return String(d).toLowerCase().replace(/ /g, "");
-      };
-      const isNavActive = (d) => {
-        const key = sectionKey(d);
-        if (key === "livenews") return navKey === "livenews" || navKey === "live";
-        return navKey === key;
-      };
+      const sectionKey = (d) => (d === "home" ? "all" : String(d).toLowerCase().replace(/ /g, ""));
+      const isNavActive = (d) => navKey === sectionKey(d);
       const otherActive = OTHER_KEYS.has(navKey);
       const [menuOpen, setMenuOpen] = useState(false);
       const [otherOpen, setOtherOpen] = useState(false);
@@ -615,7 +601,7 @@ function VerseNews() {
                 {ALL_MENU_ITEMS.map(d => {
                   const key = sectionKey(d);
                   return (
-                    <button key={"menu-" + d} onClick={() => { if (d === "Bible") onOpenBible(); else if (d === "Maps") onOpenMaps(); else if (d === "Places") onOpenPlaces(); else if (d === "Weather") onOpenWeather(); else if (d === "Live") onNavigate("livenews"); else if (d === "Tools") onOpenTools(); else if (d === "Games") onOpenGames(); else if (d === "Gallery") onOpenGallery(); else if (d === "Library") onOpenLibrary(); else onNavigate(key); setMenuOpen(false); }} style={{ background: isNavActive(d) ? VN_RED : "#272727", border: "1px solid #3d3d3d", color: "#fff", padding: "12px 10px", fontFamily: "Arial,sans-serif", fontSize: 12, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", textAlign: "left" }}>
+                    <button key={"menu-" + d} onClick={() => { if (d === "Bible") onOpenBible(); else if (d === "Maps") onOpenMaps(); else if (d === "Places") onOpenPlaces(); else if (d === "Weather") onOpenWeather(); else if (d === "Tools") onOpenTools(); else if (d === "Games") onOpenGames(); else if (d === "Gallery") onOpenGallery(); else if (d === "Library") onOpenLibrary(); else onNavigate(key); setMenuOpen(false); }} style={{ background: isNavActive(d) ? VN_RED : "#272727", border: "1px solid #3d3d3d", color: "#fff", padding: "12px 10px", fontFamily: "Arial,sans-serif", fontSize: 12, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", textAlign: "left" }}>
                       {d}
                     </button>
                   );
@@ -632,7 +618,7 @@ function VerseNews() {
                   onClick={() => {
                     if (d === "Bible") onOpenBible();
                     else if (d === "Weather") onOpenWeather();
-                    else if (d === "Live") onNavigate("livenews");
+                   
                     else onNavigate(sectionKey(d));
                     setMenuOpen(false);
                     setOtherOpen(false);
@@ -718,7 +704,6 @@ function VerseNews() {
         NEWS: { bg: VN_RED, color: "#fff" },
         BREAKING: { bg: VN_RED, color: "#fff" },
         SCIENCE: { bg: "#0d7377", color: "#fff" },
-        LIVE: { bg: "#0d7377", color: "#fff" },
         PROPHECY: { bg: "#7b2d00", color: "#fff" },
         GUIDANCE: { bg: "#003580", color: "#fff" },
         WISDOM: { bg: "#2d5a1b", color: "#fff" },
@@ -918,7 +903,7 @@ function VerseNews() {
 
                 {/* View toggle — news-style tabs */}
                 <div style={{ display: "flex", borderBottom: "2px solid " + VN_BORDER, marginBottom: 24 }}>
-                  {(story.contentType === "SCIENCE" || story.isRealNews || story.contentType === "LIVE"
+                  {(story.contentType === "SCIENCE"
                     ? [["NEWS", "REPORT"], ["SCRIPTURE", "SOURCES"], ["COMMENTS", "VOICES"]]
                     : [["NEWS", "NEWS"], ["SCRIPTURE", "SCRIPTURE"], ["COMMENTS", "COMMENTS"]]
                   ).map(([v, label]) => (
@@ -954,12 +939,6 @@ function VerseNews() {
                 {/* Content views */}
                 {view === "NEWS" && (
                   <div className="article-body">
-                    {story.isRealNews && (
-                      <div style={{ background: "#eef8f7", border: "1px solid #b8ddd8", borderLeft: "4px solid #0d7377", padding: "14px 16px", marginBottom: 22, font: "13px/1.55 Arial,sans-serif", color: "#234" }}>
-                        <strong style={{ color: "#0d7377" }}>LIVE WIRE</strong> — Contemporary reporting from a free public source
-                        {story.sourceName ? ` (${story.sourceName})` : ""}. Summary for Verse News readers; full article remains with the original publisher.
-                      </div>
-                    )}
                     {(story.body || []).map((p, i) => <p key={i}>{p}</p>)}
                     {story.anchorVerse && (
                       <blockquote style={{ borderLeft: "4px solid " + VN_RED, paddingLeft: 20, margin: "28px 0", fontFamily: "Georgia, serif", fontSize: 20, fontStyle: "italic", color: "#333", lineHeight: 1.6 }}>
@@ -968,25 +947,6 @@ function VerseNews() {
                           — {story.anchorVerse.verse}
                         </div>
                       </blockquote>
-                    )}
-                    {story.isRealNews && story.externalUrl && (
-                      <a
-                        href={story.externalUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "inline-block",
-                          marginTop: 8,
-                          background: "#0d7377",
-                          color: "#fff",
-                          padding: "12px 18px",
-                          font: "900 11px Arial,sans-serif",
-                          letterSpacing: 1,
-                          textDecoration: "none",
-                        }}
-                      >
-                        READ FULL STORY AT SOURCE ↗
-                      </a>
                     )}
                   </div>
                 )}
@@ -1076,7 +1036,7 @@ function VerseNews() {
       </section>;
     }
 
-    function VerseHomepage({ stories, onStoryClick, filters, setFilters, darkMode, setDarkMode, onOpenGames, onOpenLiveNews }) {
+    function VerseHomepage({ stories, onStoryClick, filters, setFilters, darkMode, setDarkMode, onOpenGames }) {
       const [searchQuery, setSearchQuery] = useState("");
       const [newsletterEmail, setNewsletterEmail] = useState("");
       const [newsletterStatus, setNewsletterStatus] = useState("");
@@ -1146,7 +1106,6 @@ function VerseNews() {
       });
 
       const SECTIONS = [
-        { key: "livenews",  label: "Live News", emoji: "📰",  layout: "three-col" },
         { key: "creation",  label: "Creation",  emoji: "🌍",  layout: "lead-stack" },
         { key: "torah",     label: "Torah",     emoji: "📜",  layout: "lead-stack" },
         { key: "history",   label: "History",   emoji: "⚔️",  layout: "three-col" },
@@ -1219,20 +1178,14 @@ function VerseNews() {
 
       // ── section row renderer ───────────────────────────────────────────────
       const SectionRow = ({ sec }) => {
-        const ss = stories.filter(s => {
-          if (sec.key === "livenews") return !!s.isRealNews;
-          return s.division === sec.key;
-        }).slice(0, 6);
+        const ss = stories.filter(s => s.division === sec.key).slice(0, 6);
         if (!ss.length) return null;
         const p = getPalette(ss[0].book, sec.key);
 
         const header = (
           <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:14 }}>
             <span style={{ fontFamily:"Arial,sans-serif", fontSize:17, fontWeight:900, letterSpacing:.5, color:"#1a1a1a", textTransform:"uppercase", borderBottom:`3px solid ${p.accent}`, paddingBottom:4 }}>{sec.emoji} {sec.label}</span>
-            <button onClick={() => {
-              if (sec.key === "livenews" && onOpenLiveNews) { onOpenLiveNews(); return; }
-              setFilters(f => ({...f, division:sec.key, book:null})); window.scrollTo({ top: 0, behavior: "smooth" });
-            }} style={{ background:"none", border:"none", color:VN_RED, fontFamily:"Arial,sans-serif", fontSize:11, fontWeight:700, letterSpacing:1, cursor:"pointer" }}>MORE {sec.label.toUpperCase()} →</button>
+            <button onClick={() => { setFilters(f => ({...f, division:sec.key, book:null})); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ background:"none", border:"none", color:VN_RED, fontFamily:"Arial,sans-serif", fontSize:11, fontWeight:700, letterSpacing:1, cursor:"pointer" }}>MORE {sec.label.toUpperCase()} →</button>
           </div>
         );
 
@@ -1350,7 +1303,6 @@ function VerseNews() {
 
 
       const DIVISION_HOMES = {
-        livenews:{title:"Live News",eyebrow:"Free World Wire",description:"Real contemporary reporting from free public sources, mixed into Verse desks. Open a story for a full page, then visit the original publisher for complete coverage.",accent:"#0d7377",deep:"#0b1c24",icon:"📰"},
         creation:{title:"Creation",eyebrow:"Science of Nature · Earth & Cosmos",description:"Established science that helps readers appreciate the created universe — stars, planets, Earth systems, life, and the physical laws that hold them together.",accent:"#2a9d8f",deep:"#0c2420",icon:"🌍"},
         torah:{title:"Torah",eyebrow:"The Five Books of Moses",description:"Creation, covenant, deliverance, law, wilderness, and the formation of a people.",accent:"#b87824",deep:"#2c1b0d",icon:"📜"},
         history:{title:"History",eyebrow:"Israel in the Land",description:"Conquest, judges, kings, exile, return, and the decisions that shaped a nation.",accent:"#8b2d2d",deep:"#241010",icon:"⚔️"},
@@ -2290,10 +2242,6 @@ function VerseNewsApp() {
       const [uploadedImages, setUploadedImages] = useState({});
       const [filters, setFilters] = useState({ division: "all", testament: "all", type: "all" });
       const [dbStories, setDbStories] = useState([]);
-      const [realNews, setRealNews] = useState([]);
-      const [realNewsLoading, setRealNewsLoading] = useState(true);
-      const [realNewsSources, setRealNewsSources] = useState([]);
-      const [realNewsErrors, setRealNewsErrors] = useState([]);
       const [loading, setLoading] = useState(true);
       const [footerPanel, setFooterPanel] = useState(null);
       const [darkMode, setDarkMode] = useState(false);
@@ -2306,7 +2254,6 @@ function VerseNewsApp() {
       const [showGallery, setShowGallery] = useState(false);
       const [showLibrary, setShowLibrary] = useState(false);
       const [showGames, setShowGames] = useState(false);
-      const [showLiveNews, setShowLiveNews] = useState(false);
       const [initialPlace, setInitialPlace] = useState(null);
 
       const SUPABASE_URL = "https://oxtyixmbborwmncuvafl.supabase.co";
@@ -2331,47 +2278,18 @@ function VerseNewsApp() {
           .catch(() => { setDbStories(STORIES); setLoading(false); });
       }, []);
 
-      const loadRealNews = useCallback(() => {
-        setRealNewsLoading(true);
-        fetchRealNews()
-          .then(({ items, errors, sources }) => {
-            setRealNews(Array.isArray(items) ? items : []);
-            setRealNewsErrors(Array.isArray(errors) ? errors : []);
-            setRealNewsSources(Array.isArray(sources) ? sources : []);
-          })
-          .catch((e) => {
-            setRealNews([]);
-            setRealNewsErrors([e.message || "Wire unavailable"]);
-            setRealNewsSources([]);
-          })
-          .finally(() => setRealNewsLoading(false));
-      }, []);
-
-      useEffect(() => { loadRealNews(); }, [loadRealNews]);
-
-      // Merge local-only stories + free real news wire
+      // Merge local-only stories (Creation, etc.) not yet in Supabase
       const allStories = useMemo(() => {
-        const base = (() => {
-          if (!dbStories.length) return STORIES;
-          const dbIds = new Set(dbStories.map((s) => String(s.id)));
-          const localOnly = STORIES.filter((s) => !dbIds.has(String(s.id)));
-          return localOnly.length ? [...dbStories, ...localOnly] : dbStories;
-        })();
-        if (!realNews.length) return base;
-        // Interleave wire into the pool (mixed categories via each item's division)
-        const out = [...base];
-        realNews.forEach((item, i) => {
-          // Spread live items through the list so they appear mixed, not only at the end
-          const insertAt = Math.min(out.length, 3 + i * 4);
-          out.splice(insertAt, 0, item);
-        });
-        return out;
-      }, [dbStories, realNews]);
+        if (!dbStories.length) return STORIES;
+        const dbIds = new Set(dbStories.map((s) => String(s.id)));
+        const localOnly = STORIES.filter((s) => !dbIds.has(String(s.id)));
+        if (!localOnly.length) return dbStories;
+        return [...dbStories, ...localOnly];
+      }, [dbStories]);
 
       const resetPanels = () => {
         setShowBible(false); setShowMaps(false); setShowPlaces(false);
         setShowWeather(false); setShowTools(false); setShowGames(false); setShowGallery(false); setShowLibrary(false);
-        setShowLiveNews(false);
       };
 
       const closeStory = () => {
@@ -2386,8 +2304,6 @@ function VerseNewsApp() {
         setActiveArticle(story);
         navigateHash(`/story/${story.id}`);
         window.scrollTo({ top: 0, behavior: 'auto' });
-        // Live wire / real news — already complete, never hit Supabase
-        if (story.isRealNews || String(story.id).startsWith('rn-')) return;
         // Hydrate full article body if list payload was lean
         const needsBody = !Array.isArray(story.body) || story.body.length === 0;
         if (needsBody && story.id != null) {
@@ -2441,9 +2357,6 @@ function VerseNewsApp() {
         if (division === "places") { resetPanels(); setInitialPlace(null); setShowPlaces(true); navigateHash('/places'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "games") { resetPanels(); setShowGames(true); navigateHash('/games'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "weather") { resetPanels(); setShowWeather(true); navigateHash('/weather'); window.scrollTo({top:0,behavior:"smooth"}); return; }
-        if (division === "live" || division === "livenews" || division === "world") {
-          resetPanels(); setShowLiveNews(true); navigateHash('/live'); window.scrollTo({top:0,behavior:"smooth"}); return;
-        }
         if (division === "tools") { resetPanels(); setShowTools(true); navigateHash('/tools'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "gallery") { resetPanels(); setShowGallery(true); navigateHash('/gallery'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "library") { resetPanels(); setShowLibrary(true); navigateHash('/library'); window.scrollTo({top:0,behavior:"smooth"}); return; }
@@ -2467,14 +2380,10 @@ function VerseNewsApp() {
         const { name, params } = route;
         if (name === 'story') {
           const id = params.id;
-          const found =
-            allStories.find(s => String(s.id) === String(id)) ||
-            realNews.find(s => String(s.id) === String(id));
+          const found = allStories.find(s => String(s.id) === String(id));
           resetPanels();
           if (!found) {
             setActiveArticle(null);
-            // Live wire deep-link before fetch finished
-            if (String(id).startsWith('rn-')) return;
             fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${encodeURIComponent(id)}&select=*&limit=1`, {
               headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
             })
@@ -2486,7 +2395,6 @@ function VerseNewsApp() {
             return;
           }
           setActiveArticle(found);
-          if (found.isRealNews || String(found.id).startsWith('rn-')) return;
           const needsBody = !Array.isArray(found.body) || found.body.length === 0;
           if (needsBody) {
             fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${encodeURIComponent(id)}&select=*&limit=1`, {
@@ -2510,22 +2418,18 @@ function VerseNewsApp() {
         if (name === 'maps') { resetPanels(); setShowMaps(true); return; }
         if (name === 'places') { resetPanels(); setShowPlaces(true); return; }
         if (name === 'weather') { resetPanels(); setShowWeather(true); return; }
-        if (name === 'live') { resetPanels(); setShowLiveNews(true); return; }
         if (name === 'games') { resetPanels(); setShowGames(true); return; }
         if (name === 'tools') { resetPanels(); setShowTools(true); return; }
         if (name === 'gallery') { resetPanels(); setShowGallery(true); return; }
         if (name === 'library') { resetPanels(); setShowLibrary(true); return; }
         if (name === 'division' && params.division) {
-          if (params.division === 'livenews' || params.division === 'live') {
-            resetPanels(); setShowLiveNews(true); return;
-          }
           resetPanels();
           setFilters({ division: params.division, testament: 'all', type: 'all' });
           return;
         }
         // home
         resetPanels();
-      }, [route, allStories, realNews]);
+      }, [route, allStories]);
 
       const handleImageUpload = (storyId, file) => {
         const url = URL.createObjectURL(file);
@@ -2555,7 +2459,6 @@ function VerseNewsApp() {
             activeSection={
               showBible ? "bible"
               : showWeather ? "weather"
-              : showLiveNews ? "livenews"
               : showMaps ? "maps"
               : showPlaces ? "places"
               : showTools ? "tools"
@@ -2591,16 +2494,6 @@ function VerseNewsApp() {
             <LibraryPage
               onClose={() => { setShowLibrary(false); navigateHash("/"); window.scrollTo({top:0,behavior:"smooth"}); }}
             />
-          ) : showLiveNews ? (
-            <LiveNewsPage
-              stories={allStories}
-              loading={realNewsLoading}
-              sources={realNewsSources}
-              errors={realNewsErrors}
-              onRefresh={loadRealNews}
-              onOpenStory={openStory}
-              onClose={() => { setShowLiveNews(false); navigateHash("/"); window.scrollTo({top:0,behavior:"smooth"}); }}
-            />
           ) : activeArticle ? (
             <VerseArticleView
               story={activeArticle}
@@ -2617,7 +2510,6 @@ function VerseNewsApp() {
               darkMode={darkMode}
               setDarkMode={setDarkMode}
               onOpenGames={() => { resetPanels(); setShowGames(true); navigateHash("/games"); window.scrollTo({top:0,behavior:"smooth"}); }}
-              onOpenLiveNews={() => { resetPanels(); setShowLiveNews(true); navigateHash("/live"); window.scrollTo({top:0,behavior:"smooth"}); }}
             />
           )}
 
