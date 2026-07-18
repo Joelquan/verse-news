@@ -46,7 +46,11 @@ src/
   App.jsx           # UI + routing + data loading
   index.css         # global styles
   data/stories.js   # offline story fallback library
+docs/
+  EDITORIAL.md      # desk standards (Bible / Creation / Life)
 ```
+
+Editorial spine and cold-visitor rules: see `docs/EDITORIAL.md`.
 
 ## Data
 

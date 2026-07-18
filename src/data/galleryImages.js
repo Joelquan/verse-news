@@ -13,7 +13,7 @@ export const GALLERY_CATEGORIES = [
   { key: 'history', label: 'History & Kings' },
   { key: 'gospels', label: 'Gospels' },
   { key: 'acts', label: 'Acts & Church' },
-  { key: 'scenes', label: 'Biblical Scenes' },
+  { key: 'scenes', label: 'Biblical Scenes' }
 ]
 
 /**
@@ -55,7 +55,7 @@ export const GALLERY_IMAGES = [
   // Gospels & Acts
   { id: 'n1', src: '/story-art/story-10.jpg', title: 'Five Thousand Fed', category: 'gospels', era: 'Ministry of Jesus', eventId: 10 },
   { id: 'n2', src: '/story-art/story-11.jpg', title: 'Lazarus Come Forth', category: 'gospels', era: 'Ministry of Jesus', eventId: 11 },
-  { id: 'n3', src: '/story-art/story-12.jpg', title: 'Wind and Fire — Pentecost', category: 'acts', era: 'Early Church', eventId: 12 },
+  { id: 'n3', src: '/story-art/story-12.jpg', title: 'Wind and Fire — Pentecost', category: 'acts', era: 'Early Church', eventId: 12 }
 ]
 
 export function filterGalleryImages({ category = 'all', query = '' } = {}) {

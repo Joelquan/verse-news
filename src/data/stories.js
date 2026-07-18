@@ -1,6 +1,67 @@
 // Verse News story library
 import { CREATION_STORIES } from './creationStories.js';
 import { LIFE_BLOGS } from './lifeBlog.js';
+import { REVIVAL_STORIES } from './revivalStories.js';
+import { SCRIPTURE_FILLS } from './scriptureFills.js';
+import { COMMENTARY_FILLS, LIFE_VOICE_FILLS } from './commentaryFills.js';
+
+/**
+ * Ensure Bible-desk stories have complete KJV scripture excerpts
+ * and historic-style commentary notes when local rows are empty/thin.
+ * Creation keeps Key Facts + science voices; Life gets pastoral voices.
+ */
+function enrichStoryContent(story) {
+  if (!story) return story;
+  const div = String(story.division || '').toLowerCase();
+  const isLife = div === 'life' || story.isLifeBlog;
+  const isCreation = div === 'creation' || story.contentType === 'SCIENCE' || story.testament === 'creation';
+  const isRevival = div === 'revivals';
+
+  // ── Life desk: fill Voices when empty ───────────────────────────
+  if (isLife) {
+    const existing = Array.isArray(story.commentary) ? story.commentary : [];
+    if (existing.length >= 3) return story;
+    const fill = LIFE_VOICE_FILLS[story.id] || LIFE_VOICE_FILLS[String(story.id)];
+    if (!fill?.length) return story;
+    return { ...story, commentary: fill };
+  }
+
+  // ── Creation / Revivals: leave as authored (revivals: body only) ─
+  if (isCreation || isRevival) return story;
+
+  // ── Bible desk: scripture + commentary ─────────────────────────
+  const existingScripture = Array.isArray(story.scripture) ? story.scripture : [];
+  const scriptureFill = SCRIPTURE_FILLS[story.id] || SCRIPTURE_FILLS[String(story.id)];
+  const scripture =
+    existingScripture.length >= 8 ? existingScripture
+      : (scriptureFill?.length ? scriptureFill : existingScripture);
+
+  const existingCommentary = Array.isArray(story.commentary) ? story.commentary : [];
+  const commentaryFill = COMMENTARY_FILLS[story.id] || COMMENTARY_FILLS[String(story.id)];
+  const commentary =
+    existingCommentary.length >= 4 ? existingCommentary
+      : (commentaryFill?.length ? commentaryFill : existingCommentary);
+
+  let anchorVerse = story.anchorVerse;
+  if (!anchorVerse?.text && scripture.length) {
+    const pick = scripture[Math.min(2, scripture.length - 1)];
+    anchorVerse = { verse: pick.verse, text: pick.text };
+  }
+
+  if (
+    scripture === existingScripture &&
+    commentary === existingCommentary &&
+    anchorVerse === story.anchorVerse
+  ) {
+    return story;
+  }
+  return {
+    ...story,
+    scripture: scripture || [],
+    commentary: commentary || [],
+    anchorVerse,
+  };
+}
 
 const BASE_STORIES = [
   // ── GENESIS ──────────────────────────────────────────────────────
@@ -7220,4 +7281,4 @@ const BASE_STORIES = [
   }
 ];
 
-export const STORIES = [...BASE_STORIES, ...CREATION_STORIES, ...LIFE_BLOGS];
+export const STORIES = [...BASE_STORIES, ...CREATION_STORIES, ...LIFE_BLOGS, ...REVIVAL_STORIES].map(enrichStoryContent);

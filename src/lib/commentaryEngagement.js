@@ -1,6 +1,7 @@
 /**
- * Local engagement for commentary cards:
+ * Local engagement for community content:
  * insightful / share / star counts + reader comments.
+ * Used by commentary cards, verse of the day, and quotes.
  * Persists in localStorage (per browser) until a backend is wired.
  */
 
@@ -25,7 +26,10 @@ function seedCounts(storyId, idx) {
 }
 
 function key(storyId, idx) {
-  return `vn-eng-v1-${storyId}-${idx}`
+  // Sanitize so free-form refs/authors stay valid storage keys
+  const safeId = String(storyId || 'item').replace(/[^\w.-]+/g, '_').slice(0, 80)
+  const safeIdx = String(idx ?? 0).replace(/[^\w.-]+/g, '_').slice(0, 120)
+  return `vn-eng-v1-${safeId}-${safeIdx}`
 }
 
 export function loadCommentaryEngagement(storyId, idx) {
@@ -83,6 +87,10 @@ export function saveCommentaryEngagement(storyId, idx, state) {
     /* quota / private mode */
   }
 }
+
+/** Alias for non-commentary content (verse of the day, quotes) */
+export const loadEngagement = loadCommentaryEngagement
+export const saveEngagement = saveCommentaryEngagement
 
 export function formatEngagementCount(n) {
   const v = Math.max(0, Number(n) || 0)
