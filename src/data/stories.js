@@ -1,5 +1,6 @@
 // Verse News story library
 import { CREATION_STORIES } from './creationStories.js';
+import { LIFE_BLOGS } from './lifeBlog.js';
 
 const BASE_STORIES = [
   // ── GENESIS ──────────────────────────────────────────────────────
@@ -7219,4 +7220,4 @@ const BASE_STORIES = [
   }
 ];
 
-export const STORIES = [...BASE_STORIES, ...CREATION_STORIES];
+export const STORIES = [...BASE_STORIES, ...CREATION_STORIES, ...LIFE_BLOGS];

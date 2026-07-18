@@ -5,6 +5,8 @@ import { getQuoteOfTheMoment, formatQuoteWindow } from './data/servantQuotes.js'
 import { resolveStoryImage, generatedStoryArt as generatedStoryArtFromLib } from './lib/storyImages.js';
 import GalleryPage from './components/GalleryPage.jsx';
 import LibraryPage from './components/LibraryPage.jsx';
+import LifeBlogPage from './components/LifeBlogPage.jsx';
+import { LIFE_NICHES, getDailyLifePicks } from './data/lifeBlog.js';
 
 /** Hash-based routing (no react-router dependency) */
 function parseHash() {
@@ -22,6 +24,7 @@ function parseHash() {
   if (a === 'tools') return { name: 'tools', params: {} };
   if (a === 'gallery') return { name: 'gallery', params: {} };
   if (a === 'library') return { name: 'library', params: {} };
+  if (a === 'life') return { name: 'life', params: { niche: b || null } };
   if (a === 'division' && b) return { name: 'division', params: { division: b } };
   return { name: 'home', params: {} };
 }
@@ -103,6 +106,7 @@ const BOOK_PALETTE = {
   martyrs:     { from: "#1a0000", to: "#3d0000", accent: "#cc2222" },
   biography:   { from: "#0a0a1a", to: "#18183d", accent: "#7a7acc" },
   creation:    { from: "#00141f", to: "#0a3a4a", accent: "#2a9d8f" },
+  life:        { from: "#1a120c", to: "#3d2418", accent: "#c9a84c" },
   astronomy:   { from: "#050818", to: "#152040", accent: "#6ea8fe" },
   earth:       { from: "#0a1a0a", to: "#1a3d1a", accent: "#52b788" },
   biology:     { from: "#0d1a08", to: "#1e3d12", accent: "#74c69d" },
@@ -132,6 +136,7 @@ const TESTAMENT_TABS = [
 const DIVISION_TABS = [
   { key: "all", label: "All" },
   { key: "creation", label: "Creation" },
+  { key: "life", label: "Life Desk" },
   { key: "torah", label: "Torah" },
   { key: "history", label: "History" },
   { key: "wisdom", label: "Wisdom" },
@@ -534,7 +539,7 @@ function VerseNews() {
     }
 
     function VerseHeader({ onLogoClick, onNavigate, onOpenBible, onOpenMaps, onOpenPlaces, onOpenWeather, onOpenTools, onOpenGames, onOpenGallery, onOpenLibrary, filters, activeSection }) {
-      const MAIN_DIVS = ["home", "Bible", "Weather", "Creation", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
+      const MAIN_DIVS = ["home", "Bible", "Weather", "Creation", "Life", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
       const OTHER_ITEMS = [
         { label: "Maps", action: () => onOpenMaps() },
         { label: "Places", action: () => onOpenPlaces() },
@@ -543,10 +548,14 @@ function VerseNews() {
         { label: "Tools", action: () => onOpenTools() },
         { label: "Games", action: () => onOpenGames() },
       ];
-      const ALL_MENU_ITEMS = ["home", "Bible", "Maps", "Places", "Gallery", "Library", "Weather", "Tools", "Games", "Creation", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
+      const ALL_MENU_ITEMS = ["home", "Bible", "Maps", "Places", "Gallery", "Library", "Weather", "Tools", "Games", "Creation", "Life", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
       const OTHER_KEYS = new Set(["maps", "places", "gallery", "library", "tools", "games"]);
       const navKey = String(activeSection || filters?.division || "all").toLowerCase();
-      const sectionKey = (d) => (d === "home" ? "all" : String(d).toLowerCase().replace(/ /g, ""));
+      const sectionKey = (d) => {
+        if (d === "home") return "all";
+        if (d === "Life" || d === "life") return "life";
+        return String(d).toLowerCase().replace(/ /g, "");
+      };
       const isNavActive = (d) => navKey === sectionKey(d);
       const otherActive = OTHER_KEYS.has(navKey);
       const [menuOpen, setMenuOpen] = useState(false);
@@ -601,7 +610,7 @@ function VerseNews() {
                 {ALL_MENU_ITEMS.map(d => {
                   const key = sectionKey(d);
                   return (
-                    <button key={"menu-" + d} onClick={() => { if (d === "Bible") onOpenBible(); else if (d === "Maps") onOpenMaps(); else if (d === "Places") onOpenPlaces(); else if (d === "Weather") onOpenWeather(); else if (d === "Tools") onOpenTools(); else if (d === "Games") onOpenGames(); else if (d === "Gallery") onOpenGallery(); else if (d === "Library") onOpenLibrary(); else onNavigate(key); setMenuOpen(false); }} style={{ background: isNavActive(d) ? VN_RED : "#272727", border: "1px solid #3d3d3d", color: "#fff", padding: "12px 10px", fontFamily: "Arial,sans-serif", fontSize: 12, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", textAlign: "left" }}>
+                    <button key={"menu-" + d} onClick={() => { if (d === "Bible") onOpenBible(); else if (d === "Maps") onOpenMaps(); else if (d === "Places") onOpenPlaces(); else if (d === "Weather") onOpenWeather(); else if (d === "Life") onNavigate("life"); else if (d === "Tools") onOpenTools(); else if (d === "Games") onOpenGames(); else if (d === "Gallery") onOpenGallery(); else if (d === "Library") onOpenLibrary(); else onNavigate(key); setMenuOpen(false); }} style={{ background: isNavActive(d) ? VN_RED : "#272727", border: "1px solid #3d3d3d", color: "#fff", padding: "12px 10px", fontFamily: "Arial,sans-serif", fontSize: 12, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", textAlign: "left" }}>
                       {d}
                     </button>
                   );
@@ -903,8 +912,8 @@ function VerseNews() {
 
                 {/* View toggle — news-style tabs */}
                 <div style={{ display: "flex", borderBottom: "2px solid " + VN_BORDER, marginBottom: 24 }}>
-                  {(story.contentType === "SCIENCE"
-                    ? [["NEWS", "REPORT"], ["SCRIPTURE", "SOURCES"], ["COMMENTS", "VOICES"]]
+                  {(story.contentType === "SCIENCE" || story.isLifeBlog || story.division === "life"
+                    ? [["NEWS", "GUIDE"], ["SCRIPTURE", "SCRIPTURE"], ["COMMENTS", "VOICES"]]
                     : [["NEWS", "NEWS"], ["SCRIPTURE", "SCRIPTURE"], ["COMMENTS", "COMMENTS"]]
                   ).map(([v, label]) => (
                     <button key={v} onClick={() => setView(v)} style={{
@@ -1036,7 +1045,7 @@ function VerseNews() {
       </section>;
     }
 
-    function VerseHomepage({ stories, onStoryClick, filters, setFilters, darkMode, setDarkMode, onOpenGames }) {
+    function VerseHomepage({ stories, onStoryClick, filters, setFilters, darkMode, setDarkMode, onOpenGames, onOpenLife }) {
       const [searchQuery, setSearchQuery] = useState("");
       const [newsletterEmail, setNewsletterEmail] = useState("");
       const [newsletterStatus, setNewsletterStatus] = useState("");
@@ -1303,6 +1312,7 @@ function VerseNews() {
 
 
       const DIVISION_HOMES = {
+        life:{title:"Life Desk",eyebrow:"Everyday Issues · Christian Perspective",description:"Guides for marriage, work, anxiety, money, parenting, culture, rest, and more — Scripture-rooted help for the niches of real life.",accent:"#c9a84c",deep:"#1a120c",icon:"✝️"},
         creation:{title:"Creation",eyebrow:"Science of Nature · Earth & Cosmos",description:"Established science that helps readers appreciate the created universe — stars, planets, Earth systems, life, and the physical laws that hold them together.",accent:"#2a9d8f",deep:"#0c2420",icon:"🌍"},
         torah:{title:"Torah",eyebrow:"The Five Books of Moses",description:"Creation, covenant, deliverance, law, wilderness, and the formation of a people.",accent:"#b87824",deep:"#2c1b0d",icon:"📜"},
         history:{title:"History",eyebrow:"Israel in the Land",description:"Conquest, judges, kings, exile, return, and the decisions that shaped a nation.",accent:"#8b2d2d",deep:"#241010",icon:"⚔️"},
@@ -1560,6 +1570,64 @@ function VerseNews() {
                 })()}
               </React.Fragment>
             ))}
+
+            {/* Life Desk — everyday Christian living by niche */}
+            <section className="vn-life-desk" aria-label="Life Desk" style={{ marginTop: 20, marginBottom: 20, borderTop: "4px solid #1a1a1a", paddingTop: 28 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "end", justifyContent: "space-between", gap: 16, marginBottom: 18 }}>
+                <div>
+                  <div style={{ font: "900 10px Arial,sans-serif", letterSpacing: 1.8, color: VN_RED }}>LIFE DESK · EVERYDAY ISSUES</div>
+                  <h2 style={{ fontFamily: "Georgia,serif", fontSize: "clamp(26px,4vw,36px)", margin: "8px 0 8px", color: VN_TEXT, lineHeight: 1.1 }}>
+                    Christian perspective for real life
+                  </h2>
+                  <p style={{ font: "14px/1.55 Arial,sans-serif", color: VN_MUTED, margin: 0, maxWidth: 560 }}>
+                    Come for the niche you need — marriage, work, anxiety, money, parenting, culture, rest, and more.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onOpenLife && onOpenLife()}
+                  style={{ border: "1px solid #1a1a1a", background: "#1a1a1a", color: "#fff", padding: "12px 16px", font: "900 11px Arial,sans-serif", letterSpacing: 1, cursor: "pointer" }}
+                >
+                  BROWSE ALL NICHES →
+                </button>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 22 }}>
+                {LIFE_NICHES.slice(0, 12).map((n) => (
+                  <button
+                    key={n.key}
+                    type="button"
+                    onClick={() => onOpenLife && onOpenLife(n.key)}
+                    style={{ border: "1px solid #ccc", background: "#fff", padding: "8px 11px", font: "800 10px Arial,sans-serif", letterSpacing: 0.5, cursor: "pointer", color: "#222" }}
+                  >
+                    {n.emoji} {n.label}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => onOpenLife && onOpenLife()}
+                  style={{ border: "1px solid #c00", background: "#fff8f8", padding: "8px 11px", font: "800 10px Arial,sans-serif", color: "#c00", cursor: "pointer" }}
+                >
+                  + more niches
+                </button>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))", gap: 16 }}>
+                {getDailyLifePicks(6).map((post) => (
+                  <article
+                    key={post.id}
+                    onClick={() => onStoryClick(post)}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onStoryClick(post); } }}
+                    role="button"
+                    tabIndex={0}
+                    style={{ background: "#fff", border: "1px solid " + VN_BORDER, borderTop: "3px solid #1a1a1a", padding: "16px 16px 18px", cursor: "pointer", minHeight: 200, display: "flex", flexDirection: "column" }}
+                  >
+                    <div style={{ font: "900 10px Arial,sans-serif", letterSpacing: 1.1, color: VN_RED }}>{post.emoji} {post.nicheLabel}</div>
+                    <h3 style={{ fontFamily: "Georgia,serif", fontSize: 18, lineHeight: 1.3, margin: "10px 0 10px", color: VN_TEXT }}>{post.headline}</h3>
+                    <p style={{ font: "13px/1.5 Arial,sans-serif", color: VN_MUTED, margin: 0, flex: 1 }}>{(post.summary || "").slice(0, 130)}{(post.summary || "").length > 130 ? "…" : ""}</p>
+                    <div style={{ marginTop: 12, font: "900 10px Arial,sans-serif", letterSpacing: 1, color: VN_RED }}>READ GUIDE →</div>
+                  </article>
+                ))}
+              </div>
+            </section>
           </main>
         );
       }
@@ -2253,6 +2321,8 @@ function VerseNewsApp() {
       const [showTools, setShowTools] = useState(false);
       const [showGallery, setShowGallery] = useState(false);
       const [showLibrary, setShowLibrary] = useState(false);
+      const [showLifeBlog, setShowLifeBlog] = useState(false);
+      const [lifeNiche, setLifeNiche] = useState("all");
       const [showGames, setShowGames] = useState(false);
       const [initialPlace, setInitialPlace] = useState(null);
 
@@ -2289,7 +2359,7 @@ function VerseNewsApp() {
 
       const resetPanels = () => {
         setShowBible(false); setShowMaps(false); setShowPlaces(false);
-        setShowWeather(false); setShowTools(false); setShowGames(false); setShowGallery(false); setShowLibrary(false);
+        setShowWeather(false); setShowTools(false); setShowGames(false); setShowGallery(false); setShowLibrary(false); setShowLifeBlog(false);
       };
 
       const closeStory = () => {
@@ -2360,6 +2430,7 @@ function VerseNewsApp() {
         if (division === "tools") { resetPanels(); setShowTools(true); navigateHash('/tools'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "gallery") { resetPanels(); setShowGallery(true); navigateHash('/gallery'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "library") { resetPanels(); setShowLibrary(true); navigateHash('/library'); window.scrollTo({top:0,behavior:"smooth"}); return; }
+        if (division === "life") { resetPanels(); setLifeNiche("all"); setShowLifeBlog(true); navigateHash('/life'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "bible") { resetPanels(); setShowBible(true); navigateHash('/bible'); window.scrollTo({top:0,behavior:"smooth"}); return; }
         if (division === "all" || division === "home") {
           resetPanels();
@@ -2422,6 +2493,7 @@ function VerseNewsApp() {
         if (name === 'tools') { resetPanels(); setShowTools(true); return; }
         if (name === 'gallery') { resetPanels(); setShowGallery(true); return; }
         if (name === 'library') { resetPanels(); setShowLibrary(true); return; }
+        if (name === 'life') { resetPanels(); setLifeNiche(params.niche || 'all'); setShowLifeBlog(true); return; }
         if (name === 'division' && params.division) {
           resetPanels();
           setFilters({ division: params.division, testament: 'all', type: 'all' });
@@ -2465,6 +2537,7 @@ function VerseNewsApp() {
               : showGames ? "games"
               : showGallery ? "gallery"
               : showLibrary ? "library"
+              : showLifeBlog ? "life"
               : filters.division
             }
           />
@@ -2494,6 +2567,12 @@ function VerseNewsApp() {
             <LibraryPage
               onClose={() => { setShowLibrary(false); navigateHash("/"); window.scrollTo({top:0,behavior:"smooth"}); }}
             />
+          ) : showLifeBlog ? (
+            <LifeBlogPage
+              initialNiche={lifeNiche}
+              onOpenStory={openStory}
+              onClose={() => { setShowLifeBlog(false); setLifeNiche("all"); navigateHash("/"); window.scrollTo({top:0,behavior:"smooth"}); }}
+            />
           ) : activeArticle ? (
             <VerseArticleView
               story={activeArticle}
@@ -2510,6 +2589,13 @@ function VerseNewsApp() {
               darkMode={darkMode}
               setDarkMode={setDarkMode}
               onOpenGames={() => { resetPanels(); setShowGames(true); navigateHash("/games"); window.scrollTo({top:0,behavior:"smooth"}); }}
+              onOpenLife={(niche) => {
+                resetPanels();
+                setLifeNiche(niche || "all");
+                setShowLifeBlog(true);
+                navigateHash(niche && niche !== "all" ? `/life/${niche}` : "/life");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
             />
           )}
 

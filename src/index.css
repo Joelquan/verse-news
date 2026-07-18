@@ -146,6 +146,10 @@
     .vn-premium-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:24px; margin-bottom:38px; }
     .vn-widget-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
     .vn-premium-panel { background:#fff; border:1px solid #d8d8d2; padding:20px; }
+    .vn-life-desk { scroll-margin-top: 80px; }
+    @media (max-width: 560px) {
+      .vn-life-desk h2 { font-size: 24px !important; }
+    }
     .vn-latest-row { display:grid; grid-template-columns:70px 1fr; gap:12px; padding:11px 0; border-bottom:1px solid #e5e5df; cursor:pointer; }
     .vn-latest-time { color:#c00; font:900 10px Arial,sans-serif; text-transform:uppercase; letter-spacing:.8px; }
     .vn-scripture-chip { display:block; width:100%; border:0; border-bottom:1px solid #e5e5df; background:none; text-align:left; padding:11px 0; cursor:pointer; }

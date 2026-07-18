@@ -107,6 +107,7 @@ const BOOK_SCENE = {
 }
 
 const DIVISION_SCENE = {
+  life: 'wisdom',
   creation: 'creation',
   torah: 'desert',
   history: 'battle',
