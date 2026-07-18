@@ -7,6 +7,11 @@ import GalleryPage from './components/GalleryPage.jsx';
 import LibraryPage from './components/LibraryPage.jsx';
 import LifeBlogPage from './components/LifeBlogPage.jsx';
 import { LIFE_NICHES, getDailyLifePicks } from './data/lifeBlog.js';
+import {
+  loadCommentaryEngagement,
+  saveCommentaryEngagement,
+  formatEngagementCount,
+} from './lib/commentaryEngagement.js';
 
 /** Hash-based routing (no react-router dependency) */
 function parseHash() {
@@ -309,34 +314,52 @@ function CommentatorAvatar({ name }) {
   return <div style={{ width: 36, height: 36, borderRadius: "50%", background: `linear-gradient(135deg,${COLORS.goldDim},${COLORS.gold})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 800, color: "#000", flexShrink: 0 }}>{initials}</div>;
 }
 
-function CommentaryCard({ c, i, total }) {
+function MobileCommentaryCard({ c, i, storyId }) {
   const [expanded, setExpanded] = useState(false);
-  const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const PREVIEW_LENGTH = 280;
-  const isLong = c.text.length > PREVIEW_LENGTH;
+  const [eng, setEng] = useState(() => loadCommentaryEngagement(storyId, i));
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [draft, setDraft] = useState("");
+  const PREVIEW = 280;
+  const isLong = (c.text || "").length > PREVIEW;
+  const persist = (next) => { setEng(next); saveCommentaryEngagement(storyId, i, next); };
   return (
-    <article style={{ background: "#151515", border: `1px solid ${COLORS.border}`, borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: "0 8px 22px rgba(0,0,0,.2)" }}>
-      <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-        <div style={{ position: "relative", flexShrink: 0 }}>
-          <CommentatorAvatar name={c.author} />
-          <span title="Historical commentator" style={{ position: "absolute", right: -2, bottom: -2, width: 15, height: 15, borderRadius: "50%", background: COLORS.gold, color: "#000", border: "2px solid #151515", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 900 }}>✓</span>
-        </div>
+    <article style={{ background: "#151515", border: `1px solid ${COLORS.border}`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+      <div style={{ display: "flex", gap: 12 }}>
+        <CommentatorAvatar name={c.author} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
             <strong style={{ fontSize: 13, color: COLORS.text }}>{c.author}</strong>
-            <span style={{ fontSize: 10, color: COLORS.gold, border: `1px solid ${COLORS.goldDim}`, borderRadius: 999, padding: "2px 7px" }}>COMMENTATOR</span>
-            <span style={{ marginLeft: "auto", fontSize: 11, color: COLORS.textMuted }}>{c.era}</span>
+            <span style={{ fontSize: 10, color: COLORS.gold }}>{c.era}</span>
           </div>
-          <div style={{ fontSize: 14, lineHeight: 1.72, color: "#d2d2d2", marginTop: 9 }}>
-            {expanded || !isLong ? c.text : c.text.slice(0, PREVIEW_LENGTH).trimEnd() + "…"}
+          <div style={{ fontSize: 14, lineHeight: 1.72, color: "#d2d2d2", marginTop: 8 }}>
+            {expanded || !isLong ? c.text : c.text.slice(0, PREVIEW).trimEnd() + "…"}
           </div>
-          {isLong && <button onClick={() => setExpanded(e => !e)} style={{ background: "none", border: "none", color: COLORS.gold, fontSize: 12, fontWeight: 700, cursor: "pointer", padding: "7px 0 0" }}>{expanded ? "Show less" : "Read more"}</button>}
-          <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${COLORS.border}` }}>
-            <button onClick={() => setLiked(v => !v)} aria-pressed={liked} style={{ background: "none", border: "none", color: liked ? COLORS.gold : COLORS.textMuted, fontSize: 12, fontWeight: 700, cursor: "pointer", padding: 0 }}>{liked ? "♥ Insightful" : "♡ Insightful"}</button>
-            <button onClick={() => navigator.clipboard?.writeText(c.text)} style={{ background: "none", border: "none", color: COLORS.textMuted, fontSize: 12, fontWeight: 700, cursor: "pointer", padding: 0 }}>↗ Share</button>
-            <button onClick={() => setSaved(v => !v)} aria-pressed={saved} style={{ marginLeft: "auto", background: "none", border: "none", color: saved ? COLORS.gold : COLORS.textMuted, fontSize: 12, fontWeight: 700, cursor: "pointer", padding: 0 }}>{saved ? "★ Saved" : "☆ Save"}</button>
+          {isLong && <button type="button" onClick={() => setExpanded(v => !v)} style={{ background: "none", border: "none", color: COLORS.gold, fontSize: 12, fontWeight: 700, cursor: "pointer", padding: "6px 0 0" }}>{expanded ? "Show less" : "Read more"}</button>}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${COLORS.border}`, fontSize: 12, fontWeight: 700 }}>
+            <button type="button" onClick={() => { const liked = !eng.liked; persist({ ...eng, liked, insightful: Math.max(0, eng.insightful + (liked ? 1 : -1)) }); }} style={{ background: "none", border: "none", color: eng.liked ? COLORS.gold : COLORS.textMuted, cursor: "pointer", padding: 0 }}>{eng.liked ? "♥" : "♡"} {formatEngagementCount(eng.insightful)}</button>
+            <button type="button" onClick={() => { navigator.clipboard?.writeText(`"${c.text}" — ${c.author}`); persist({ ...eng, shares: eng.shares + 1 }); }} style={{ background: "none", border: "none", color: COLORS.textMuted, cursor: "pointer", padding: 0 }}>↗ {formatEngagementCount(eng.shares)}</button>
+            <button type="button" onClick={() => { const starred = !eng.starred; persist({ ...eng, starred, stars: Math.max(0, eng.stars + (starred ? 1 : -1)) }); }} style={{ background: "none", border: "none", color: eng.starred ? COLORS.gold : COLORS.textMuted, cursor: "pointer", padding: 0 }}>{eng.starred ? "★" : "☆"} {formatEngagementCount(eng.stars)}</button>
+            <button type="button" onClick={() => setOpen(v => !v)} style={{ background: "none", border: "none", color: open ? COLORS.gold : COLORS.textMuted, cursor: "pointer", padding: 0, marginLeft: "auto" }}>💬 {eng.comments?.length || 0}</button>
           </div>
+          {open && (
+            <div style={{ marginTop: 12 }}>
+              {(eng.comments || []).map(cm => (
+                <div key={cm.id} style={{ marginBottom: 8, fontSize: 13, color: "#ccc" }}><strong style={{ color: COLORS.gold }}>{cm.name}</strong>: {cm.text}</div>
+              ))}
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                if (!draft.trim()) return;
+                const entry = { id: String(Date.now()), name: (name || "Reader").slice(0, 40), text: draft.trim().slice(0, 800), at: new Date().toISOString() };
+                persist({ ...eng, comments: [...(eng.comments || []), entry].slice(-50) });
+                setDraft("");
+              }} style={{ display: "grid", gap: 6, marginTop: 8 }}>
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="Name" style={{ background: "#0f0f0f", border: `1px solid ${COLORS.border}`, color: "#fff", padding: 8, fontSize: 13 }} />
+                <textarea value={draft} onChange={e => setDraft(e.target.value)} placeholder="Your comment" rows={2} required style={{ background: "#0f0f0f", border: `1px solid ${COLORS.border}`, color: "#fff", padding: 8, fontSize: 13 }} />
+                <button type="submit" style={{ background: COLORS.gold, border: 0, color: "#000", fontWeight: 800, padding: 8, cursor: "pointer" }}>Post</button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </article>
@@ -349,7 +372,7 @@ function CommentaryView({ story }) {
     <div>
       <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: COLORS.goldDim, marginBottom: 18, textTransform: "uppercase" }}>COMMENTARY · {story.commentary.length} NOTES</div>
       {story.commentary.map((c, i) => (
-        <CommentaryCard key={i} c={c} i={i} total={story.commentary.length} />
+        <MobileCommentaryCard key={`${story.id}-${i}`} c={c} i={i} storyId={story.id} />
       ))}
     </div>
   );
@@ -801,34 +824,226 @@ function VerseNews() {
     }
 
 
-    function VerseCommentCard({ c, i, total }) {
+    function VerseCommentCard({ c, i, total, storyId, variant = "light" }) {
+      const dark = variant === "dark";
       const [expanded, setExpanded] = useState(false);
-      const [liked, setLiked] = useState(false);
-      const [saved, setSaved] = useState(false);
+      const [eng, setEng] = useState(() => loadCommentaryEngagement(storyId, i));
+      const [showComments, setShowComments] = useState(false);
+      const [name, setName] = useState(() => {
+        try { return localStorage.getItem("vn-reader-name") || ""; } catch { return ""; }
+      });
+      const [draft, setDraft] = useState("");
+      const [shareNote, setShareNote] = useState("");
       const PREVIEW = 280;
-      const isLong = c.text.length > PREVIEW;
+      const isLong = (c.text || "").length > PREVIEW;
+
+      const persist = (next) => {
+        setEng(next);
+        saveCommentaryEngagement(storyId, i, next);
+      };
+
+      const toggleInsightful = () => {
+        const liked = !eng.liked;
+        persist({
+          ...eng,
+          liked,
+          insightful: Math.max(0, eng.insightful + (liked ? 1 : -1)),
+        });
+      };
+
+      const onShare = async () => {
+        const payload = `"${c.text}"\n— ${c.author}${c.era ? ` (${c.era})` : ""}`;
+        try {
+          if (navigator.share) {
+            await navigator.share({ title: c.author, text: payload });
+          } else if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(payload);
+            setShareNote("Copied");
+            setTimeout(() => setShareNote(""), 1600);
+          }
+        } catch { /* user cancelled */ }
+        persist({ ...eng, shares: eng.shares + 1 });
+      };
+
+      const toggleStar = () => {
+        const starred = !eng.starred;
+        persist({
+          ...eng,
+          starred,
+          stars: Math.max(0, eng.stars + (starred ? 1 : -1)),
+        });
+      };
+
+      const submitComment = (e) => {
+        e.preventDefault();
+        const text = draft.trim();
+        if (!text) return;
+        const reader = (name || "Reader").trim().slice(0, 40) || "Reader";
+        try { localStorage.setItem("vn-reader-name", reader); } catch { /* ignore */ }
+        const entry = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          name: reader,
+          text: text.slice(0, 800),
+          at: new Date().toISOString(),
+        };
+        const comments = [...(eng.comments || []), entry].slice(-50);
+        persist({ ...eng, comments });
+        setDraft("");
+        setShowComments(true);
+      };
+
+      const cardBg = dark ? "#151515" : "#fff";
+      const border = dark ? COLORS.border : VN_BORDER;
+      const textMain = dark ? "#d2d2d2" : "#333";
+      const textStrong = dark ? COLORS.text : VN_TEXT;
+      const muted = dark ? COLORS.textMuted : VN_MUTED;
+      const accent = dark ? COLORS.gold : VN_RED;
+      const chipBg = dark ? "transparent" : "#fff0f0";
+      const chipBorder = dark ? `1px solid ${COLORS.goldDim}` : "none";
+      const inputBg = dark ? "#0f0f0f" : "#f9f9f5";
+      const threadBg = dark ? "#0f0f0f" : "#f7f7f2";
+
+      const btnBase = {
+        background: "none",
+        border: "none",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 12,
+        fontWeight: 700,
+        cursor: "pointer",
+        padding: "4px 0",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+      };
+
       return (
-        <article style={{ background: "#fff", border: "1px solid " + VN_BORDER, borderRadius: 16, padding: 20, marginBottom: 18, boxShadow: "0 8px 24px rgba(0,0,0,.06)" }}>
+        <article style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: dark ? 14 : 16, padding: dark ? 16 : 20, marginBottom: dark ? 14 : 18, boxShadow: dark ? "0 8px 22px rgba(0,0,0,.2)" : "0 8px 24px rgba(0,0,0,.06)" }}>
           <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
             <div style={{ position: "relative", flexShrink: 0 }}>
               <CommentatorAvatar name={c.author} />
-              <span title="Historical commentator" style={{ position: "absolute", right: -3, bottom: -3, width: 17, height: 17, borderRadius: "50%", background: VN_RED, color: "#fff", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 900 }}>✓</span>
+              <span title="Historical commentator" style={{ position: "absolute", right: -3, bottom: -3, width: 17, height: 17, borderRadius: "50%", background: accent, color: dark ? "#000" : "#fff", border: `2px solid ${cardBg}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 900 }}>✓</span>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <strong style={{ fontFamily: "Arial, sans-serif", fontSize: 14, color: VN_TEXT }}>{c.author}</strong>
-                <span style={{ fontFamily: "Arial, sans-serif", fontSize: 9, fontWeight: 800, letterSpacing: 1, color: VN_RED, background: "#fff0f0", borderRadius: 999, padding: "3px 8px" }}>COMMENTATOR</span>
-                <span style={{ marginLeft: "auto", fontFamily: "Arial, sans-serif", fontSize: 12, color: VN_MUTED }}>{c.era}</span>
+                <strong style={{ fontFamily: "Arial, sans-serif", fontSize: dark ? 13 : 14, color: textStrong }}>{c.author}</strong>
+                <span style={{ fontFamily: "Arial, sans-serif", fontSize: dark ? 10 : 9, fontWeight: 800, letterSpacing: 1, color: accent, background: chipBg, border: chipBorder, borderRadius: 999, padding: "3px 8px" }}>COMMENTATOR</span>
+                <span style={{ marginLeft: "auto", fontFamily: "Arial, sans-serif", fontSize: 12, color: muted }}>{c.era}</span>
               </div>
-              <div style={{ fontFamily: "Georgia, serif", fontSize: 16, lineHeight: 1.75, color: "#333", marginTop: 10 }}>
+              <div style={{ fontFamily: dark ? "inherit" : "Georgia, serif", fontSize: dark ? 14 : 16, lineHeight: 1.75, color: textMain, marginTop: 10 }}>
                 {expanded || !isLong ? c.text : c.text.slice(0, PREVIEW).trimEnd() + "…"}
               </div>
-              {isLong && <button onClick={() => setExpanded(e => !e)} style={{ background: "none", border: "none", color: VN_RED, fontFamily: "Arial, sans-serif", fontSize: 12, fontWeight: 700, padding: "8px 0 0", cursor: "pointer" }}>{expanded ? "Show less" : "Read more"}</button>}
-              <div style={{ display: "flex", alignItems: "center", gap: 18, marginTop: 14, paddingTop: 12, borderTop: "1px solid " + VN_BORDER }}>
-                <button onClick={() => setLiked(v => !v)} aria-pressed={liked} style={{ background: "none", border: "none", color: liked ? VN_RED : VN_MUTED, fontFamily: "Arial, sans-serif", fontSize: 12, fontWeight: 700, cursor: "pointer", padding: 0 }}>{liked ? "♥ Insightful" : "♡ Insightful"}</button>
-                <button onClick={() => navigator.clipboard?.writeText(c.text)} style={{ background: "none", border: "none", color: VN_MUTED, fontFamily: "Arial, sans-serif", fontSize: 12, fontWeight: 700, cursor: "pointer", padding: 0 }}>↗ Share</button>
-                <button onClick={() => setSaved(v => !v)} aria-pressed={saved} style={{ marginLeft: "auto", background: "none", border: "none", color: saved ? VN_RED : VN_MUTED, fontFamily: "Arial, sans-serif", fontSize: 12, fontWeight: 700, cursor: "pointer", padding: 0 }}>{saved ? "★ Saved" : "☆ Save"}</button>
+              {isLong && (
+                <button type="button" onClick={() => setExpanded((e) => !e)} style={{ background: "none", border: "none", color: accent, fontFamily: "Arial, sans-serif", fontSize: 12, fontWeight: 700, padding: "8px 0 0", cursor: "pointer" }}>
+                  {expanded ? "Show less" : "Read more"}
+                </button>
+              )}
+
+              <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginTop: 14, paddingTop: 12, borderTop: `1px solid ${border}` }}>
+                <button type="button" onClick={toggleInsightful} aria-pressed={eng.liked} style={{ ...btnBase, color: eng.liked ? accent : muted }}>
+                  <span>{eng.liked ? "♥" : "♡"} Insightful</span>
+                  <span style={{ fontVariantNumeric: "tabular-nums", opacity: 0.9 }}>{formatEngagementCount(eng.insightful)}</span>
+                </button>
+                <button type="button" onClick={onShare} style={{ ...btnBase, color: muted }}>
+                  <span>↗ Share</span>
+                  <span style={{ fontVariantNumeric: "tabular-nums", opacity: 0.9 }}>{formatEngagementCount(eng.shares)}</span>
+                  {shareNote ? <span style={{ color: accent, fontSize: 10 }}>{shareNote}</span> : null}
+                </button>
+                <button type="button" onClick={toggleStar} aria-pressed={eng.starred} style={{ ...btnBase, color: eng.starred ? accent : muted }}>
+                  <span>{eng.starred ? "★" : "☆"} Star</span>
+                  <span style={{ fontVariantNumeric: "tabular-nums", opacity: 0.9 }}>{formatEngagementCount(eng.stars)}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowComments((v) => !v)}
+                  style={{ ...btnBase, marginLeft: "auto", color: showComments ? accent : muted }}
+                >
+                  💬 Comment{eng.comments?.length ? ` (${eng.comments.length})` : ""}
+                </button>
               </div>
+
+              {showComments && (
+                <div style={{ marginTop: 14, padding: 14, background: threadBg, border: `1px solid ${border}`, borderRadius: 10 }}>
+                  <div style={{ font: "900 10px Arial,sans-serif", letterSpacing: 1.2, color: accent, marginBottom: 10, textTransform: "uppercase" }}>
+                    Reader comments · {eng.comments?.length || 0}
+                  </div>
+
+                  {(eng.comments || []).length === 0 ? (
+                    <p style={{ font: "13px/1.5 Arial,sans-serif", color: muted, margin: "0 0 12px" }}>
+                      Be the first to respond to {c.author}.
+                    </p>
+                  ) : (
+                    <ul style={{ listStyle: "none", margin: "0 0 14px", padding: 0, display: "grid", gap: 10 }}>
+                      {(eng.comments || []).map((cm) => (
+                        <li key={cm.id} style={{ paddingBottom: 10, borderBottom: `1px solid ${border}` }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
+                            <strong style={{ font: "800 12px Arial,sans-serif", color: textStrong }}>{cm.name}</strong>
+                            <span style={{ font: "11px Arial,sans-serif", color: muted }}>
+                              {cm.at ? new Date(cm.at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : ""}
+                            </span>
+                          </div>
+                          <p style={{ font: "13px/1.55 Arial,sans-serif", color: textMain, margin: 0, whiteSpace: "pre-wrap" }}>{cm.text}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  <form onSubmit={submitComment} style={{ display: "grid", gap: 8 }}>
+                    <input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your name"
+                      maxLength={40}
+                      aria-label="Your name"
+                      style={{
+                        width: "100%",
+                        boxSizing: "border-box",
+                        border: `1px solid ${border}`,
+                        background: inputBg,
+                        color: textStrong,
+                        padding: "10px 12px",
+                        font: "13px Arial,sans-serif",
+                      }}
+                    />
+                    <textarea
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      placeholder={`Reply to ${c.author}…`}
+                      maxLength={800}
+                      rows={3}
+                      required
+                      aria-label={`Comment on ${c.author}`}
+                      style={{
+                        width: "100%",
+                        boxSizing: "border-box",
+                        border: `1px solid ${border}`,
+                        background: inputBg,
+                        color: textStrong,
+                        padding: "10px 12px",
+                        font: "13px/1.45 Arial,sans-serif",
+                        resize: "vertical",
+                      }}
+                    />
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                      <span style={{ font: "11px Arial,sans-serif", color: muted }}>{draft.length}/800</span>
+                      <button
+                        type="submit"
+                        disabled={!draft.trim()}
+                        style={{
+                          border: 0,
+                          background: draft.trim() ? accent : muted,
+                          color: dark && draft.trim() ? "#000" : "#fff",
+                          padding: "10px 14px",
+                          font: "900 11px Arial,sans-serif",
+                          letterSpacing: 0.8,
+                          cursor: draft.trim() ? "pointer" : "not-allowed",
+                        }}
+                      >
+                        POST COMMENT
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
             </div>
           </div>
         </article>
@@ -844,8 +1059,11 @@ function VerseNews() {
           <div style={{ fontFamily: "Arial, sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, color: VN_RED, marginBottom: 24, textTransform: "uppercase" }}>
             Commentary · {story.commentary.length} Scholars
           </div>
+          <p style={{ font: "13px/1.5 Arial,sans-serif", color: VN_MUTED, margin: "0 0 18px" }}>
+            Mark insights, share quotes, star keepers, and leave a comment under any voice.
+          </p>
           {story.commentary.map((c, i) => (
-            <VerseCommentCard key={i} c={c} i={i} total={story.commentary.length} />
+            <VerseCommentCard key={`${story.id}-${i}`} c={c} i={i} total={story.commentary.length} storyId={story.id} variant="light" />
           ))}
         </div>
       );
