@@ -1237,7 +1237,7 @@ function VerseNews() {
     }
 
     function VerseHeader({ onLogoClick, onNavigate, onOpenBible, onOpenMaps, onOpenPlaces, onOpenWeather, onOpenTools, onOpenGames, onOpenGallery, filters, activeSection }) {
-      const MAIN_DIVS = ["home", "Bible", "Weather", "Creation", "Life", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
+      const MAIN_DIVS = ["home", "Bible", "Weather", "Creation", "Life", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revelation", "Revivals", "Martyrs", "Biography"];
       const OTHER_ITEMS = [
         { label: "Maps", action: () => onOpenMaps() },
         { label: "Places", action: () => onOpenPlaces() },
@@ -1245,7 +1245,7 @@ function VerseNews() {
         { label: "Tools", action: () => onOpenTools() },
         { label: "Games", action: () => onOpenGames() },
       ];
-      const ALL_MENU_ITEMS = ["home", "Bible", "Maps", "Places", "Gallery", "Weather", "Tools", "Games", "Creation", "Life", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revivals", "Martyrs", "Biography"];
+      const ALL_MENU_ITEMS = ["home", "Bible", "Maps", "Places", "Gallery", "Weather", "Tools", "Games", "Creation", "Life", "Torah", "History", "Wisdom", "Prophets", "Gospels", "Acts", "Epistles", "Revelation", "Revivals", "Martyrs", "Biography"];
       const OTHER_KEYS = new Set(["maps", "places", "gallery", "tools", "games"]);
       const navKey = String(activeSection || filters?.division || "all").toLowerCase();
       const sectionKey = (d) => {
